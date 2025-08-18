@@ -7,31 +7,37 @@ import { AnnualPlan } from './entities/annual-plan.entity';
 
 @Injectable()
 export class AnnualPlansService {
+  //se usa patron de diseño de repository para interactuar con la bd
 
   constructor(
     @InjectRepository(AnnualPlan)
     private readonly plansRepository: Repository<AnnualPlan>,
-  ) {}
+  ) { }
 
   async create(createAnnualPlanDto: CreateAnnualPlanDto) {
     //return `This action adds a annualPlan`;
-    const annualPlan = this.plansRepository.create(createAnnualPlanDto);
-    return await this.plansRepository.save(annualPlan);
+    try {
+      const annualPlan = this.plansRepository.create(createAnnualPlanDto);
+      return await this.plansRepository.save(annualPlan);
+    } catch (error) {
+      console.error('Error creating annual plan:', error);
+      throw error;
+    }
   }
 
   async findAll() {
-    return await this.plansRepository.find(); 
+    return await this.plansRepository.find();
   }
 
   async findOne(id: number) {
-    return `This action returns a #${id} annualPlan`;
+    return await this.plansRepository.findOneBy({ id });
   }
 
   async update(id: number, updateAnnualPlanDto: UpdateAnnualPlanDto) {
-    return `This action updates a #${id} annualPlan`;
+    return await this.plansRepository.update( id , updateAnnualPlanDto);
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} annualPlan`;
+    return await this.plansRepository.softDelete({ id });
   }
 }

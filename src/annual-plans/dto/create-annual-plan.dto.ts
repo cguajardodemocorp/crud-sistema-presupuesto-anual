@@ -4,6 +4,8 @@ import { IsInt, IsNumber } from "class-validator";
 export class CreateAnnualPlanDto {
     //Validaciones de tipo de dato
     @IsInt()
+    //Validacion para que no sea nulo
+    
     pais_id: number;
 
     @IsInt()

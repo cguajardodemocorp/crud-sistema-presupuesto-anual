@@ -38,5 +38,9 @@ export class AnnualPlan {
 
     @Column()
     moneda_id: number;
+
+    //fecha de soft delete
+    @DeleteDateColumn()
+    deletedAt: Date;
 }
 
