@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AnnualPlansModule } from './annual-plans/annual-plans.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DetailPlansModule } from './detail-plans/detail-plans.module';
 
 @Module({
   imports: [AnnualPlansModule,
@@ -14,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true,//desactivar en prd
     }),
+    DetailPlansModule,
   ],
   controllers: [],
   providers: [],
