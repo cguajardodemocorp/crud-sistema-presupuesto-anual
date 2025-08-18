@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { AnnualPlansModule } from './annual-plans/annual-plans.module';
 
 @Module({
-  imports: [],
+  imports: [AnnualPlansModule],
   controllers: [],
   providers: [],
 })
