@@ -1,1 +1,3 @@
-export class AnnualPlan {}
+export class AnnualPlan {
+    
+}

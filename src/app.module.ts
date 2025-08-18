@@ -1,9 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AnnualPlansModule } from './annual-plans/annual-plans.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [AnnualPlansModule],
+  imports: [AnnualPlansModule,
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3307,
+      username: 'user_crud',
+      password: 'root',
+      database: 'crud',
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
