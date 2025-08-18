@@ -10,9 +10,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: 3307,
       username: 'user_crud',
       password: 'root',
-      database: 'crud',
+      database: 'db_crud',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: true,//desactivar en prd
     }),
   ],
   controllers: [],

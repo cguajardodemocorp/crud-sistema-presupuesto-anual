@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAnnualPlanDto } from './dto/create-annual-plan.dto';
 import { UpdateAnnualPlanDto } from './dto/update-annual-plan.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AnnualPlan } from './entities/annual-plan.entity';
 
 @Injectable()
 export class AnnualPlansService {
-  create(createAnnualPlanDto: CreateAnnualPlanDto) {
-    return 'This action adds a new annualPlan';
+
+  constructor(
+    @InjectRepository(AnnualPlan)
+    private readonly plansRepository: Repository<AnnualPlan>,
+  ) {}
+
+  async create(createAnnualPlanDto: CreateAnnualPlanDto) {
+    //return `This action adds a annualPlan`;
+    const annualPlan = this.plansRepository.create(createAnnualPlanDto);
+    return await this.plansRepository.save(annualPlan);
   }
 
-  findAll() {
-    return `This action returns all annualPlans`;
+  async findAll() {
+    return await this.plansRepository.find(); 
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} annualPlan`;
   }
 
-  update(id: number, updateAnnualPlanDto: UpdateAnnualPlanDto) {
+  async update(id: number, updateAnnualPlanDto: UpdateAnnualPlanDto) {
     return `This action updates a #${id} annualPlan`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} annualPlan`;
   }
 }
