@@ -1,3 +1,4 @@
+import { IsInt } from "class-validator";
 import {
   Column,
   DeleteDateColumn,
@@ -38,6 +39,24 @@ export class AnnualPlan {
 
     @Column()
     moneda_id: number;
+
+    @Column()
+    anio: Date;
+    
+    @Column()
+    usuario_id: number;
+
+    @Column()
+    fecha_carga: Date;
+    
+    @Column()
+    tipo_carga: string;
+
+    @Column()
+    mes: number;
+    
+    @Column()
+    cantidad: number;
 
     //fecha de soft delete
     @DeleteDateColumn()

@@ -1,11 +1,10 @@
-import { IsInt, IsNumber } from "class-validator";
+import { IsDate, IsIn, IsInt, IsNumber, IsOptional } from "class-validator";
 
 
 export class CreateAnnualPlanDto {
     //Validaciones de tipo de dato
-    @IsInt()
     //Validacion para que no sea nulo
-    
+    @IsInt()
     pais_id: number;
 
     @IsInt()
@@ -31,4 +30,24 @@ export class CreateAnnualPlanDto {
 
     @IsInt()
     moneda_id: number;
+
+    @IsDate()
+    anio: Date;
+
+    @IsInt()
+    usuario_id: number;
+
+    @IsDate()
+    fecha_carga: Date;
+
+    @IsOptional()
+    @IsIn(['NORMAL', 'CONFIDENCIAL'])
+    tipo_carga?: 'NORMAL' | 'CONFIDENCIAL';
+
+    @IsInt()
+    mes: number;
+
+    @IsInt()
+    cantidad: number;
+
 }
