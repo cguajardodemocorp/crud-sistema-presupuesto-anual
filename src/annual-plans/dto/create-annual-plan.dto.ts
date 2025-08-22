@@ -36,9 +36,8 @@ export class CreateAnnualPlanDto {
     @IsInt()
     moneda_id: number;
 
-    @Type(() => Date)
-    @IsDate()
-    anio: Date;
+    @IsInt()
+    anio: number;
 
     @IsInt()
     usuario_id: number;

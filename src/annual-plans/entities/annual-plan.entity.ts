@@ -5,6 +5,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Exclude } from 'class-transformer';
 
 
 @Entity()
@@ -40,8 +41,8 @@ export class AnnualPlan {
     @Column()
     moneda_id: number;
 
-    @Column()
-    anio: Date;
+    @Column({ type: 'int' })
+    anio: number;
     
     @Column()
     usuario_id: number;
@@ -59,6 +60,7 @@ export class AnnualPlan {
     cantidad: number;
 
     //fecha de soft delete
+    @Exclude()
     @DeleteDateColumn()
     deletedAt: Date;
 }
