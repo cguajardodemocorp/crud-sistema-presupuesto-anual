@@ -1,5 +1,10 @@
-import { IsDate, IsIn, IsInt, IsNumber, IsOptional } from "class-validator";
 
+import { Type } from "class-transformer";
+import { IsInt } from "class-validator";
+import { IsNumber } from "class-validator";
+import { IsDate } from "class-validator";
+import { IsOptional } from "class-validator";
+import { IsIn} from "class-validator";
 
 export class CreateAnnualPlanDto {
     //Validaciones de tipo de dato
@@ -31,12 +36,14 @@ export class CreateAnnualPlanDto {
     @IsInt()
     moneda_id: number;
 
+    @Type(() => Date)
     @IsDate()
     anio: Date;
 
     @IsInt()
     usuario_id: number;
 
+    @Type(() => Date)
     @IsDate()
     fecha_carga: Date;
 
