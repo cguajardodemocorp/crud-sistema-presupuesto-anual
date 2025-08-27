@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   mysql:
     image: mysql:8.0
@@ -13,3 +14,18 @@ services:
       - ./mysql:/var/lib/mysql
     ports:
       - "3307:3306"
+
+  backend:
+    build: .
+    container_name: backend_app
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: db_crud
+      DB_USER: user_crud
+      DB_PASS: root
+    ports:
+      - "3000:3000"
