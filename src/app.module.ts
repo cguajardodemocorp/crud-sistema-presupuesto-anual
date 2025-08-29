@@ -1,23 +1,27 @@
 import { Module } from '@nestjs/common';
-import { AnnualPlansModule } from './annual-plans/annual-plans.module';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { AnnualPlansModule } from './annual-plans/annual-plans.module';
 import { DetailPlansModule } from './detail-plans/detail-plans.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
-  imports: [AnnualPlansModule,
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3307,
-      username: 'user_crud',
-      password: 'root',
-      database: 'db_crud',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT ?? '3306', 10),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true,//desactivar en prd
+      synchronize: false,
     }),
+    AnnualPlansModule,
     DetailPlansModule,
+    HealthModule,
   ],
-  controllers: [],
-  providers: [],
 })
-export class AppModule { }
+export class AppModule {}
