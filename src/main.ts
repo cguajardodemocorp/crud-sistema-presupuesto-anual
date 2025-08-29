@@ -17,6 +17,12 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new DateFormatInterceptor());
 
+  app.enableCors({
+    origin: '*', // O especifica el dominio de tu frontend, por ejemplo: 'http://localhost:4200'
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
