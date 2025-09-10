@@ -12,12 +12,12 @@ import { HealthModule } from './health/health.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT ?? '3306', 10),
+      port: parseInt(process.env.DB_PORT ?? '3307', 10), //3306
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true, // never use TRUE in production
     }),
     AnnualPlansModule,
     DetailPlansModule,
