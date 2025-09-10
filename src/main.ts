@@ -4,7 +4,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { DateFormatInterceptor } from './common/interceptors/date-format.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
+     app.enableCors({
+       origin: [
+         'http://localhost:4200',
+         'https://presupuesto.democorpinterno.com'
+       ], // Permite acceso desde frontend local y dominio externo
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+    });
 
   app.setGlobalPrefix("budgeSystem/v1");
 
@@ -17,12 +25,6 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new DateFormatInterceptor());
 
-  app.enableCors({
-    origin: ['http://localhost:4002', 'https://presupuesto.democorpinterno.com'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
-
-  await app.listen(3000);
+  await app.listen(3000); 
 }
 bootstrap();
