@@ -3,12 +3,14 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Exclude } from 'class-transformer';
+import { DetailPlan } from "src/detail-plans/entities/detail-plan.entity";
 
 
-@Entity()
+@Entity('plan_presupuestario')
 export class AnnualPlan {
   //Mapeo concolumnas de la base de datos
     @Column({ primary: true, generated: true })
@@ -63,5 +65,8 @@ export class AnnualPlan {
     @Exclude()
     @DeleteDateColumn()
     deletedAt: Date;
+
+    @OneToMany (() => DetailPlan, (detailPlan) => detailPlan.annualPlan, { cascade: true })
+    detalle_planes: DetailPlan[];
 }
 

@@ -18,17 +18,17 @@ export class DetailPlansController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.detailPlansService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.detailPlansService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDetailPlanDto: UpdateDetailPlanDto) {
-    return this.detailPlansService.update(+id, updateDetailPlanDto);
+  update(@Param('id') id: number, @Body() updateDetailPlanDto: UpdateDetailPlanDto) {
+    return this.detailPlansService.update(id, updateDetailPlanDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.detailPlansService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.detailPlansService.remove(id);
   }
 }
