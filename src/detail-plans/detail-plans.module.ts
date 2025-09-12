@@ -6,8 +6,9 @@ import { DetailPlan } from './entities/detail-plan.entity';
 import { AnnualPlan } from 'src/annual-plans/entities/annual-plan.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DetailPlan, AnnualPlan])],
+  imports: [TypeOrmModule.forFeature([DetailPlan])],
   controllers: [DetailPlansController],
   providers: [DetailPlansService],
+  exports: [TypeOrmModule], //se exporta para ser accedido de otra tabla que tenga dependencia, ej plan annual
 })
 export class DetailPlansModule {}

@@ -61,12 +61,12 @@ export class AnnualPlan {
     @Column()
     cantidad: number;
 
+    @OneToMany (() => DetailPlan, (detailPlan) => detailPlan.annualPlan)
+    detalle_planes: DetailPlan[];
+
     //fecha de soft delete
     @Exclude()
     @DeleteDateColumn()
     deletedAt: Date;
-
-    @OneToMany (() => DetailPlan, (detailPlan) => detailPlan.annualPlan, { cascade: true })
-    detalle_planes: DetailPlan[];
 }
 

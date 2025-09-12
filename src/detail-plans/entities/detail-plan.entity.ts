@@ -7,8 +7,12 @@ export class DetailPlan {
     @Column({ primary: true, generated: true })
     id: number;
 
-    @ManyToOne(() => AnnualPlan, (annualPlan) => annualPlan.id)
+    @ManyToOne(() => AnnualPlan, (annualPlan) => annualPlan, {
+        cascade: true,
+        eager: true, //Para que siempre que se consulte un DetailPlan, traiga el AnnualPlan asociado
+    })
     annualPlan: AnnualPlan;
+    //@Column({ name: 'plan_presupuestario_id' })
 
     @Column()
     mes: number;
