@@ -41,7 +41,7 @@ export class DetailPlansService {
   }
 
   async findOne(id: number) {
-    return `This action returns a #${id} detailPlan`;
+    return await this.detailPlanRepository.findOneBy({ id });
   }
 
   async update(id: number, updateDetailPlanDto: UpdateDetailPlanDto) {
@@ -68,6 +68,6 @@ export class DetailPlansService {
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} detailPlan`;
+    return await this.detailPlanRepository.softDelete({ id });
   }
 }

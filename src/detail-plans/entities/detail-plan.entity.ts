@@ -1,6 +1,8 @@
+import { Exclude } from "class-transformer";
 import { AnnualPlan } from "src/annual-plans/entities/annual-plan.entity";
 import { 
     Column, 
+    DeleteDateColumn, 
     Entity, 
     JoinColumn, 
     ManyToOne } from "typeorm";
@@ -23,5 +25,10 @@ export class DetailPlan {
 
     @Column()
     monto: number;
+
+    //fecha de soft delete
+    @Exclude()
+    @DeleteDateColumn()
+    deletedAt: Date;
 
 }
