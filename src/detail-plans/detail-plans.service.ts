@@ -41,7 +41,14 @@ export class DetailPlansService {
   }
 
   async findOne(id: number) {
-    return await this.detailPlanRepository.findOneBy({ id });
+    const detailPlan = await this.detailPlanRepository.findOne({ where: { id }, withDeleted: true });
+    if (!detailPlan) {
+      throw new BadRequestException('DetailPlan not found');
+    }
+    if (detailPlan.deletedAt) {
+      throw new BadRequestException('DetailPlan Deleted');
+    }
+    return detailPlan;
   }
 
   async update(id: number, updateDetailPlanDto: UpdateDetailPlanDto) {

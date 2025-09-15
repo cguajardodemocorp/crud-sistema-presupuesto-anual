@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateAnnualPlanDto } from './dto/create-annual-plan.dto';
 import { UpdateAnnualPlanDto } from './dto/update-annual-plan.dto';
 import { Repository } from 'typeorm';
@@ -32,7 +32,14 @@ export class AnnualPlansService {
   }
 
   async findOne(id: number) {
-    return await this.plansRepository.findOneBy({ id });
+    const annualPlan = await this.plansRepository.findOne({ where: { id }, withDeleted: true });
+    if (!annualPlan) {
+      throw new BadRequestException('AnnualPlan not found');
+    }
+    if (annualPlan.deletedAt) {
+      throw new BadRequestException('AnnualPlan deleted');
+    }
+    return annualPlan;
   }
 
   async update(id: number, updateAnnualPlanDto: UpdateAnnualPlanDto) {
