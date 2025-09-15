@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AnnualPlan } from 'src/annual-plans/entities/annual-plan.entity';
+import { Repository } from 'typeorm';
 import { CreateDetailPlanDto } from './dto/create-detail-plan.dto';
 import { UpdateDetailPlanDto } from './dto/update-detail-plan.dto';
 import { DetailPlan } from './entities/detail-plan.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException } from '@nestjs/common';
-import { AnnualPlan } from 'src/annual-plans/entities/annual-plan.entity';
+
 
 @Injectable()
 export class DetailPlansService {
@@ -18,9 +18,22 @@ export class DetailPlansService {
   ) {}
 
   async create(createDetailPlanDto: CreateDetailPlanDto) {
+    // Buscar el AnnualPlan por id
+    const annualPlan = await this.plansRepository.findOneBy({
+      id: createDetailPlanDto.annualPlanId,
+    });
 
-    const annualPlan = this.plansRepository.findOneBy({ id: createDetailPlanDto.annualPlanId });
-    return await this.detailPlanRepository.save(createDetailPlanDto);
+    if (!annualPlan) {
+      throw new BadRequestException('AnnualPlan not found');
+    }
+
+    // Crear el DetailPlan asociando el AnnualPlan encontrado
+    const detailPlan = this.detailPlanRepository.create({
+      mes: createDetailPlanDto.mes,
+      monto: createDetailPlanDto.monto,
+      annualPlan: annualPlan,
+    });
+    return await this.detailPlanRepository.save(detailPlan);
   }
 
   async findAll() {
@@ -32,7 +45,26 @@ export class DetailPlansService {
   }
 
   async update(id: number, updateDetailPlanDto: UpdateDetailPlanDto) {
-    return `This action updates a #${id} detailPlan`;
+    const detailPlan = await this.detailPlanRepository.findOneBy({ id });
+
+    if (!detailPlan) {
+      throw new BadRequestException('DetailPlan not found');
+    }
+
+    let annualPlan = detailPlan.annualPlan;
+    if (updateDetailPlanDto.annualPlanId) {
+      const foundPlan = await this.plansRepository.findOneBy({ id: updateDetailPlanDto.annualPlanId });
+      if (!foundPlan) {
+        throw new BadRequestException('AnnualPlan not found');
+      }
+      annualPlan = foundPlan;
+    }
+
+    return await this.detailPlanRepository.save({
+      ...detailPlan,
+      ...updateDetailPlanDto,
+      annualPlan,
+    });
   }
 
   async remove(id: number) {

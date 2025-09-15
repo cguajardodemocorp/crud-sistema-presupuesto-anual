@@ -62,7 +62,7 @@ export class AnnualPlan {
     cantidad: number;
 
     @OneToMany (() => DetailPlan, (detailPlan) => detailPlan.annualPlan)
-    detalle_planes: DetailPlan[];
+    anual_plans: DetailPlan[];
 
     //fecha de soft delete
     @Exclude()
