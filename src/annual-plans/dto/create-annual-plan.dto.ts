@@ -28,7 +28,7 @@ export class CreateAnnualPlanDto {
     recurso_id: number;
 
     @IsInt()
-    local_id: number;
+    localidad_id: number;
 
     @IsNumber()
     tarifa: number;

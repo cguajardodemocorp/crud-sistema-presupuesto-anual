@@ -3,4 +3,7 @@ import { IsInt, IsString } from "class-validator";
 export class CreateCecoDto {
     @IsString()
     codigo: string;
+
+    @IsString()
+    descripcion: string;
 }
