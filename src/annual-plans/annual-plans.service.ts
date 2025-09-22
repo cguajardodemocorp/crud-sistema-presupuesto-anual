@@ -43,8 +43,15 @@ export class AnnualPlansService {
   }
 
   async update(id: number, updateAnnualPlanDto: UpdateAnnualPlanDto) {
-   // return await this.plansRepository.update( id , updateAnnualPlanDto);
-   return `This action updates a annualPlan`;
+    const annualPlan = await this.plansRepository.findOne({ where: { id }, withDeleted: true });
+    if (!annualPlan) {
+      throw new BadRequestException('AnnualPlan not found');
+    }
+    if (annualPlan.deletedAt) {
+      throw new BadRequestException('AnnualPlan deleted');
+    }
+    Object.assign(annualPlan, updateAnnualPlanDto);
+    return await this.plansRepository.save(annualPlan);
   }
 
   async remove(id: number) {

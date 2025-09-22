@@ -18,17 +18,17 @@ export class CecoController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cecoService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.cecoService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCecoDto: UpdateCecoDto) {
-    return this.cecoService.update(+id, updateCecoDto);
+  update(@Param('id') id: number, @Body() updateCecoDto: UpdateCecoDto) {
+    return this.cecoService.update(id, updateCecoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cecoService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.cecoService.remove(id);
   }
 }

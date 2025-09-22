@@ -19,16 +19,16 @@ export class AnnualPlansController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.annualPlansService.findOne(+id);
+    return this.annualPlansService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAnnualPlanDto: UpdateAnnualPlanDto) {
-    return this.annualPlansService.update(+id, updateAnnualPlanDto);
+  update(@Param('id') id: number, @Body() updateAnnualPlanDto: UpdateAnnualPlanDto) {
+    return this.annualPlansService.update(id, updateAnnualPlanDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.annualPlansService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.annualPlansService.remove(id);
   }
 }
