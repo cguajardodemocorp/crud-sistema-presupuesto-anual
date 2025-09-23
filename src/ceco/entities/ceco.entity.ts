@@ -14,7 +14,7 @@ export class Ceco {
     @Column({ primary: true, generated: true })
     id: number;
     
-    @Column()
+    @Column({ type: 'varchar', unique: true, nullable: false })
     codigo: string;
 
     @Column()

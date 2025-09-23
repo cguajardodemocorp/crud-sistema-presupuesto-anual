@@ -15,6 +15,11 @@ export class CecoService {
 
   async create(createCecoDto: CreateCecoDto) {
     try {
+      // Validar que el código no exista previamente
+      const exists = await this.cecoRepository.findOne({ where: { codigo: createCecoDto.codigo } });
+      if (exists) {
+        throw new BadRequestException('El código CECO ya existe');
+      }
       const ceco = this.cecoRepository.create(createCecoDto);
       return await this.cecoRepository.save(ceco);
     } catch (error) {
