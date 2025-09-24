@@ -18,16 +18,19 @@ export class AnnualPlansService {
 
   async create(createAnnualPlanDto: CreateAnnualPlanDto) {
     try {
-      // Validar que el CECO existe antes de crear el AnnualPlan
-      const cecoId = createAnnualPlanDto.ceco_id;
-      const ceco = await this.plansRepository.manager.getRepository('Ceco').findOne({ where: { id: cecoId }, withDeleted: true });
-      if (!ceco) {
+      // Buscar CECO por código usando el campo 'ceco' del DTO
+      const cecoCode = (createAnnualPlanDto as any).ceco;
+      const cecoEntity = await this.plansRepository.manager.getRepository('Ceco').findOne({ where: { codigo: cecoCode }, withDeleted: true });
+      if (!cecoEntity) {
         throw new BadRequestException('No existe el CECO indicado');
       }
-      if (ceco.deletedAt) {
+      if (cecoEntity.deletedAt) {
         throw new BadRequestException('El CECO está borrado');
       }
-      const annualPlan = this.plansRepository.create(createAnnualPlanDto);
+      // Construir el objeto a guardar, usando el id de CECO en la propiedad 'ceco_id'
+      const { ceco, ...rest } = createAnnualPlanDto as any;
+      const annualPlanData = { ...rest, ceco_id: cecoEntity.id };// Se elimina el ceco del request y se añade ceco_id
+      const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
       console.error('Error creating annual plan:', error);

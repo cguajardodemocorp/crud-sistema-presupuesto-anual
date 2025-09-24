@@ -1,10 +1,10 @@
-
 import { Type } from "class-transformer";
 import { IsInt } from "class-validator";
 import { IsNumber } from "class-validator";
 import { IsDate } from "class-validator";
 import { IsOptional } from "class-validator";
 import { IsIn} from "class-validator";
+import { IsString } from "class-validator";
 
 export class CreateAnnualPlanDto {
     //Validaciones de tipo de dato
@@ -15,8 +15,8 @@ export class CreateAnnualPlanDto {
     @IsInt()
     razon_social_id: number;
 
-    @IsInt()
-    ceco_id: number;
+    @IsString()
+    ceco: string; //Se recibe la columna code de la tabala Ceco
 
     @IsInt()
     cuenta_id: number;
