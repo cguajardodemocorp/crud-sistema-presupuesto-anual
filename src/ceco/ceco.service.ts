@@ -15,10 +15,11 @@ export class CecoService {
 
   async create(createCecoDto: CreateCecoDto) {
     try {
-      // Validar que el código no exista previamente
-      const exists = await this.cecoRepository.findOne({ where: { codigo: createCecoDto.codigo } });
-      if (exists) {
-        throw new BadRequestException('El código CECO ya existe');
+        // Permitir crear si todos los CECO con ese código están borrados en otros ID
+        const cecosConCodigo = await this.cecoRepository.find({ where: { codigo: createCecoDto.codigo }, withDeleted: true });
+        const algunoActivo = cecosConCodigo.some(c => !c.deletedAt);
+        if (algunoActivo) {
+          throw new BadRequestException('El código de CECO ya existe y está activo');
       }
       const ceco = this.cecoRepository.create(createCecoDto);
       return await this.cecoRepository.save(ceco);
