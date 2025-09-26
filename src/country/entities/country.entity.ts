@@ -14,7 +14,7 @@ export class Country {
     @Column({ primary: true, generated: true })
     id: number;
     
-    @Column({ type: 'varchar', unique: true, nullable: false })
+    @Column({ type: 'varchar', nullable: false })
     nombre: string;
 
     //fecha de soft delete
