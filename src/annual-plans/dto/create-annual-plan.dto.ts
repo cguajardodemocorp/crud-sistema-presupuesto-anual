@@ -9,8 +9,8 @@ import { IsString } from "class-validator";
 export class CreateAnnualPlanDto {
     //Validaciones de tipo de dato
     //Validacion para que no sea nulo
-    @IsInt()
-    pais_id: number;
+    @IsString()
+    pais: string; //Se recibe la columna nombre de la tabla Pais
 
     @IsInt()
     razon_social_id: number;

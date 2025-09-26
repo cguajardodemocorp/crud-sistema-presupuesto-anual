@@ -1,26 +1,75 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
+import { Country } from './entities/country.entity';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class CountryService {
-  create(createCountryDto: CreateCountryDto) {
-    return 'This action adds a new country';
+  constructor(
+    @InjectRepository(Country)
+    private readonly countryRepository: Repository<Country>,
+  ) {}
+
+  async create(createCountryDto: CreateCountryDto) {
+      try {
+        // Permitir crear solo si todos los países con ese mismo nombre están borrados en otros ID
+        const paisesConNombre = await this.countryRepository.find({ where: { nombre: createCountryDto.nombre }, withDeleted: true });
+        const algunoActivo = paisesConNombre.some(c => !c.deletedAt);
+        if (algunoActivo) {
+          throw new BadRequestException('El nombre de país ya existe y está activo');
+      }
+      const pais = this.countryRepository.create(createCountryDto);
+      return await this.countryRepository.save(pais);
+    } catch (error) {
+      console.error('Error creando pais:', error);
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all country`;
+  async findAll() {
+    return await this.countryRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} country`;
+  async findOne(id: number) {
+    const country = await this.countryRepository.findOne({ where: { id }, withDeleted: true });
+    if (!country) {
+      throw new BadRequestException('Country not found');
+    }
+    if (country.deletedAt) {
+      throw new BadRequestException('Country deleted');
+    }
+    return country;
   }
 
-  update(id: number, updateCountryDto: UpdateCountryDto) {
-    return `This action updates a #${id} country`;
+  async update(id: number, updateCountryDto: UpdateCountryDto) {
+    try {
+      const country = await this.countryRepository.findOne({ where: { id }, withDeleted: true });
+      if (!country) {
+        throw new BadRequestException('Country not found');
+      }
+      if (country.deletedAt) {
+        throw new BadRequestException('Country deleted');
+      }
+      // Validar que el nuevo código no exista en otro registro
+      if (updateCountryDto.nombre) {
+        const exists = await this.countryRepository.findOne({ where: { nombre: updateCountryDto.nombre } });
+        if (exists && exists.id !== id) {
+          throw new BadRequestException('El pais ya existe en otro registro');
+        }
+      }
+      Object.assign(country, updateCountryDto);
+      return await this.countryRepository.save(country);
+    } catch (error) {
+      console.error('Error updating Country:', error);
+      throw error;
+    }
   }
+  
 
-  remove(id: number) {
-    return `This action removes a #${id} country`;
+  async remove(id: number) {
+    return await this.countryRepository.softDelete({id});
   }
 }

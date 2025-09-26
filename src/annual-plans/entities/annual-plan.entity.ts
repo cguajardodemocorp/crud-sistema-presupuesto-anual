@@ -11,6 +11,8 @@ import {
 import { Exclude } from 'class-transformer';
 import { DetailPlan } from "src/detail-plans/entities/detail-plan.entity";
 import { Ceco } from "src/ceco/entities/ceco.entity";
+import { Country } from "src/country/entities/country.entity";
+import { count } from "console";
 
 
 @Entity('plan_presupuestario')
@@ -21,6 +23,11 @@ export class AnnualPlan {
 
   @Column()
   pais_id: number;
+  @ManyToOne(() => Country, (country) => country.annualPlans, {
+    eager: true, //Para que siempre que se consulte un AnnualPlan, traiga el País asociado
+  })
+  @JoinColumn({ name: 'pais_id' })
+  country: Country;
 
   @Column()
   razon_social_id: number;
