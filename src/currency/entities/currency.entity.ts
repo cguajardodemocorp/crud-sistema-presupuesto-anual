@@ -26,6 +26,6 @@ export class Currency {
     deletedAt: Date;
 
     // Relación 1:N con AnnualPlan
-   // @OneToMany (() => AnnualPlan, (annualPlan) => annualPlan.currency)
+    @OneToMany (() => AnnualPlan, (annualPlan) => annualPlan.currency)
     annualPlans: AnnualPlan[]; //Representa todos los AnnualPlan asociados a esta Moneda
 }

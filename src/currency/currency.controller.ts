@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CurrencyService } from './currency.service';
 import { CreateCurrencyDto } from './dto/create-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
+import { NumericType } from 'typeorm';
 
 @Controller('currency')
 export class CurrencyController {
@@ -18,17 +19,17 @@ export class CurrencyController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.currencyService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.currencyService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCurrencyDto: UpdateCurrencyDto) {
-    return this.currencyService.update(+id, updateCurrencyDto);
+  update(@Param('id') id: number, @Body() updateCurrencyDto: UpdateCurrencyDto) {
+    return this.currencyService.update(id, updateCurrencyDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.currencyService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.currencyService.remove(id);
   }
 }

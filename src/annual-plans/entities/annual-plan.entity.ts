@@ -13,7 +13,6 @@ import { DetailPlan } from "src/detail-plans/entities/detail-plan.entity";
 import { Ceco } from "src/ceco/entities/ceco.entity";
 import { Country } from "src/country/entities/country.entity";
 import { Currency } from "src/currency/entities/currency.entity";
-import { count } from "console";
 
 
 @Entity('plan_presupuestario')
@@ -58,6 +57,11 @@ export class AnnualPlan {
 
   @Column()
   moneda_id: number;
+  @ManyToOne(() => Currency, (currency) => currency.annualPlans, {
+    eager: true, //Para que siempre que se consulte un AnnualPlan, traiga la Moneda asociada
+  })
+  @JoinColumn({ name: 'moneda_id' })
+  currency: Currency;
 
   @Column({ type: 'int' })
   anio: number;
