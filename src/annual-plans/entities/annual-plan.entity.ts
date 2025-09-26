@@ -12,6 +12,7 @@ import { Exclude } from 'class-transformer';
 import { DetailPlan } from "src/detail-plans/entities/detail-plan.entity";
 import { Ceco } from "src/ceco/entities/ceco.entity";
 import { Country } from "src/country/entities/country.entity";
+import { Currency } from "src/currency/entities/currency.entity";
 import { count } from "console";
 
 

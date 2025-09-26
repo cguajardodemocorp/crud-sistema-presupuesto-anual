@@ -20,27 +20,23 @@ export class AnnualPlansService {
     try {
       // Buscar CECO por código usando el campo 'ceco' del DTO
       const cecoCode = (createAnnualPlanDto as any).ceco;
-      const cecoEntity = await this.plansRepository.manager.getRepository('Ceco').findOne({ where: { codigo: cecoCode }, withDeleted: true });
-      if (!cecoEntity) {
-        throw new BadRequestException('No existe el CECO indicado');
-      }
-      if (cecoEntity.deletedAt) {
-        throw new BadRequestException('El CECO está borrado');
+      const cecoEntities = await this.plansRepository.manager.getRepository('Ceco').find({ where: { codigo: cecoCode }, withDeleted: true });
+      const cecoActivo = cecoEntities.find(c => !c.deletedAt);
+      if (!cecoActivo) {
+        throw new BadRequestException('No existe un CECO activo con el código indicado');
       }
 
-      // Buscar Country por nombre usando el campo 'country' del DTO
-      const countryName = (createAnnualPlanDto as any).country;
-      const countryEntity = await this.plansRepository.manager.getRepository('Country').findOne({ where: { nombre: countryName }, withDeleted: true });
-      if (!countryEntity) {
-        throw new BadRequestException('No existe el país indicado');
-      }
-      if (countryEntity.deletedAt) {
-        throw new BadRequestException('El país está borrado');
+      // Buscar País por nombre usando el campo 'pais' del DTO de AnnualPlan
+      const paisName = (createAnnualPlanDto as any).pais;
+      const paisEntities = await this.plansRepository.manager.getRepository('Country').find({ where: { nombre: paisName }, withDeleted: true });
+      const paisActivo = paisEntities.find(p => !p.deletedAt);
+      if (!paisActivo) {
+        throw new BadRequestException('No existe un país activo con el nombre indicado');
       }
 
-      // Construir el objeto a guardar, usando el id de CECO y Country en las propiedades 'ceco_id' y 'country_id'
-      const { ceco, country, ...rest } = createAnnualPlanDto as any;
-      const annualPlanData = { ...rest, ceco_id: cecoEntity.id, country_id: countryEntity.id };
+      // Construir el objeto a guardar, usando el id de CECO y País en las propiedades 'ceco_id' y 'pais_id'
+     const { ceco, pais, ...rest } = createAnnualPlanDto as any;
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id };
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
@@ -72,6 +68,31 @@ export class AnnualPlansService {
     if (annualPlan.deletedAt) {
       throw new BadRequestException('AnnualPlan deleted');
     }
+
+    // Validar y mapear CECO si se envía
+    if ((updateAnnualPlanDto as any).ceco) {
+      const cecoCode = (updateAnnualPlanDto as any).ceco;
+      const cecoEntities = await this.plansRepository.manager.getRepository('Ceco').find({ where: { codigo: cecoCode }, withDeleted: true });
+      const cecoActivo = cecoEntities.find(c => !c.deletedAt);
+      if (!cecoActivo) {
+        throw new BadRequestException('No existe un CECO activo con el código indicado');
+      }
+      (updateAnnualPlanDto as any).ceco_id = cecoActivo.id;
+      delete (updateAnnualPlanDto as any).ceco;
+    }
+
+    // Validar y mapear País si se envía
+    if ((updateAnnualPlanDto as any).pais) {
+      const paisName = (updateAnnualPlanDto as any).pais;
+      const paisEntities = await this.plansRepository.manager.getRepository('Country').find({ where: { nombre: paisName }, withDeleted: true });
+      const paisActivo = paisEntities.find(p => !p.deletedAt);
+      if (!paisActivo) {
+        throw new BadRequestException('No existe un país activo con el nombre indicado');
+      }
+      (updateAnnualPlanDto as any).pais_id = paisActivo.id;
+      delete (updateAnnualPlanDto as any).pais;
+    }
+
     Object.assign(annualPlan, updateAnnualPlanDto);
     return await this.plansRepository.save(annualPlan);
   }

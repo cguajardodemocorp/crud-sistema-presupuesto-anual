@@ -10,13 +10,13 @@ export class CreateAnnualPlanDto {
     //Validaciones de tipo de dato
     //Validacion para que no sea nulo
     @IsString()
-    pais: string; //Se recibe la columna nombre de la tabla Pais
+    pais: string; //Se recibe el valor de la columna nombre de la tabla Pais y se valdia por id en el service
 
     @IsInt()
     razon_social_id: number;
 
     @IsString()
-    ceco: string; //Se recibe la columna code de la tabala Ceco
+    ceco: string; //Se recibe el valor de la columna code de la tabala Ceco y se valdia por id en el service
 
     @IsInt()
     cuenta_id: number;
@@ -34,7 +34,7 @@ export class CreateAnnualPlanDto {
     tarifa: number;
 
     @IsInt()
-    moneda_id: number;
+    moneda_id: number; //Se recibe el valor de la columna code de la tabala Ceco y se valdia por id en el service
 
     @IsInt()
     anio: number;
