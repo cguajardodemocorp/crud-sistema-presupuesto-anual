@@ -33,8 +33,8 @@ export class CreateAnnualPlanDto {
     @IsNumber()
     tarifa: number;
 
-    @IsInt()
-    moneda_id: number; //Se recibe el valor de la columna code de la tabala Ceco y se valdia por id en el service
+    @IsString()
+    moneda: string; //Se recibe el valor de la columna code de la tabala Ceco y se valdia por id en el service
 
     @IsInt()
     anio: number;

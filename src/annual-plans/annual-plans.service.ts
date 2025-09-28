@@ -4,7 +4,6 @@ import { UpdateAnnualPlanDto } from './dto/update-annual-plan.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AnnualPlan } from './entities/annual-plan.entity';
-import { DetailPlan } from 'src/detail-plans/entities/detail-plan.entity';
 
 
 @Injectable()
@@ -26,7 +25,7 @@ export class AnnualPlansService {
         throw new BadRequestException('No existe un CECO activo con el código indicado');
       }
 
-      // Buscar País por nombre usando el campo 'pais' del DTO de AnnualPlan
+      // Buscar País por nombre en lugar de id usando el campo 'pais' del DTO de AnnualPlan
       const paisName = (createAnnualPlanDto as any).pais;
       const paisEntities = await this.plansRepository.manager.getRepository('Country').find({ where: { nombre: paisName }, withDeleted: true });
       const paisActivo = paisEntities.find(p => !p.deletedAt);
@@ -34,9 +33,17 @@ export class AnnualPlansService {
         throw new BadRequestException('No existe un país activo con el nombre indicado');
       }
 
+      // Buscar Moneda por codigo en lugar de id usando el campo 'moneda' del DTO de AnnualPlan
+      const currencyCode = (createAnnualPlanDto as any).moneda;
+      const currencyEntities = await this.plansRepository.manager.getRepository('Currency').find({ where: { codigo: currencyCode }, withDeleted: true });
+      const currencyActivo = currencyEntities.find(c => !c.deletedAt);
+      if (!currencyActivo) {
+        throw new BadRequestException('No existe una moneda activa con el código indicado');
+      }
+
       // Construir el objeto a guardar, usando el id de CECO y País en las propiedades 'ceco_id' y 'pais_id'
-     const { ceco, pais, ...rest } = createAnnualPlanDto as any;
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id };
+     const { ceco, pais, moneda, ...rest } = createAnnualPlanDto as any;
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id };
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
