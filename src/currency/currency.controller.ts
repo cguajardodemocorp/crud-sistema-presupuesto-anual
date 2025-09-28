@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CurrencyService } from './currency.service';
 import { CreateCurrencyDto } from './dto/create-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
-import { NumericType } from 'typeorm';
 
 @Controller('currency')
 export class CurrencyController {

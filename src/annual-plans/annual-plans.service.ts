@@ -100,6 +100,18 @@ export class AnnualPlansService {
       delete (updateAnnualPlanDto as any).pais;
     }
 
+    // Validar y mapear Moneda si se envía
+    if ((updateAnnualPlanDto as any).moneda) {
+      const currencName = (updateAnnualPlanDto as any).moneda;
+      const currencyEntities = await this.plansRepository.manager.getRepository('Currency').find({ where: { nombre: currencName }, withDeleted: true });
+      const currencyActivo = currencyEntities.find(c => !c.deletedAt);
+      if (!currencyActivo) {
+        throw new BadRequestException('No existe una moneda activa con el nombre indicado');
+      }
+      (updateAnnualPlanDto as any).moneda_id = currencyActivo.id;
+      delete (updateAnnualPlanDto as any).moneda;
+    }
+
     Object.assign(annualPlan, updateAnnualPlanDto);
     return await this.plansRepository.save(annualPlan);
   }
