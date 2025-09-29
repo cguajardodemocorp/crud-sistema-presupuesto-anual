@@ -1,26 +1,74 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCompanyNameDto } from './dto/create-company-name.dto';
 import { UpdateCompanyNameDto } from './dto/update-company-name.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CompanyName } from './entities/company-name.entity';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class CompanyNameService {
-  create(createCompanyNameDto: CreateCompanyNameDto) {
-    return 'This action adds a new companyName';
+  constructor(
+    @InjectRepository(CompanyName)
+    private readonly companyNameRepository: Repository<CompanyName>,
+  ) { }
+
+  async create(createCompanyNameDto: CreateCompanyNameDto) {
+    try {
+      // Permitir crear solo si todos los razon social con ese mismo nombre están borrados en otros ID
+      const razonSocialConNombre = await this.companyNameRepository.find({ where: { nombre: createCompanyNameDto.nombre }, withDeleted: true });
+      const algunoActivo = razonSocialConNombre.some(c => !c.deletedAt);
+      if (algunoActivo) {
+        throw new BadRequestException('El nombre de razon social ya existe y está activo');
+      }
+      const razonSocial = this.companyNameRepository.create(createCompanyNameDto);
+      return await this.companyNameRepository.save(razonSocial);
+    } catch (error) {
+      console.error('Error creando razon social:', error);
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all companyName`;
+  async findAll() {
+    return await this.companyNameRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} companyName`;
+  async findOne(id: number) {
+    const companyName = await this.companyNameRepository.findOne({ where: { id }, withDeleted: true });
+    if (!companyName) {
+      throw new BadRequestException('Company name not found');
+    }
+    if (companyName.deletedAt) {
+      throw new BadRequestException('Company name deleted');
+    }
+    return companyName;
   }
 
-  update(id: number, updateCompanyNameDto: UpdateCompanyNameDto) {
-    return `This action updates a #${id} companyName`;
+  async update(id: number, updateCompanyNameDto: UpdateCompanyNameDto) {
+    try {
+      const companyName = await this.companyNameRepository.findOne({ where: { id }, withDeleted: true });
+      if (!companyName) {
+        throw new BadRequestException('Company name not found');
+      }
+      if (companyName.deletedAt) {
+        throw new BadRequestException('Company name deleted');
+      }
+      // Validar que el nuevo código no exista en otro registro
+      if (updateCompanyNameDto.nombre) {
+        const exists = await this.companyNameRepository.findOne({ where: { nombre: updateCompanyNameDto.nombre } });
+        if (exists && exists.id !== id) {
+          throw new BadRequestException('Razon social ya existe en otro registro');
+        }
+      }
+      Object.assign(companyName, updateCompanyNameDto);
+      return await this.companyNameRepository.save(companyName);
+    } catch (error) {
+      console.error('Error updating Company Name:', error);
+      throw error;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} companyName`;
+  async remove(id: number) {
+    return await this.companyNameRepository.softDelete({id});
   }
 }

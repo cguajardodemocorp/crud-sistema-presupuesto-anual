@@ -12,8 +12,8 @@ export class CreateAnnualPlanDto {
     @IsString()
     pais: string; //Se recibe el valor de la columna nombre de la tabla Pais y se valdia por id en el service
 
-    @IsInt()
-    razon_social_id: number;
+    @IsString()
+    razon_social: string; //Se recibe el valor de la columna nombre de la tabla RazonSocial y se valdia por id en el service
 
     @IsString()
     ceco: string; //Se recibe el valor de la columna code de la tabala Ceco y se valdia por id en el service

@@ -41,9 +41,17 @@ export class AnnualPlansService {
         throw new BadRequestException('No existe una moneda activa con el código indicado');
       }
 
-      // Construir el objeto a guardar, usando el id de CECO y País en las propiedades 'ceco_id' y 'pais_id'
-     const { ceco, pais, moneda, ...rest } = createAnnualPlanDto as any;
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id };
+      // Buscar Razon Social por nombre en lugar de id usando el campo 'razon_social' del DTO de AnnualPlan
+      const razonSocialName = (createAnnualPlanDto as any).razon_social;
+      const razonSocialEntities = await this.plansRepository.manager.getRepository('CompanyName').find({ where: { nombre: razonSocialName }, withDeleted: true });
+      const razonSocialActivo = razonSocialEntities.find(r => !r.deletedAt);
+      if (!razonSocialActivo) {
+        throw new BadRequestException('No existe una Razon Social activa con el nombre indicado');
+      }
+
+      // Construir el objeto a guardar, usando el id de CECO, País, Moneda y Razon Social en las propiedades 'ceco_id', 'pais_id', 'moneda_id' y 'razon_social_id'
+     const { ceco, pais, moneda, razon_social, ...rest } = createAnnualPlanDto as any;
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id };
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
@@ -111,6 +119,19 @@ export class AnnualPlansService {
       (updateAnnualPlanDto as any).moneda_id = currencyActivo.id;
       delete (updateAnnualPlanDto as any).moneda;
     }
+
+    // Validar y mapear Razon Social si se envía
+    if ((updateAnnualPlanDto as any).razon_social) {
+      const CompanyName = (updateAnnualPlanDto as any).razon_social;
+      const companyNameEntities = await this.plansRepository.manager.getRepository('Company').find({ where: { nombre: CompanyName }, withDeleted: true });
+      const companyNameActivo = companyNameEntities.find(c => !c.deletedAt);
+      if (!companyNameActivo) {
+        throw new BadRequestException('No existe Razon social activa con el nombre indicado');
+      }
+      (updateAnnualPlanDto as any).razon_social_id = companyNameActivo.id;
+      delete (updateAnnualPlanDto as any).razon_social;
+    }
+
 
     Object.assign(annualPlan, updateAnnualPlanDto);
     return await this.plansRepository.save(annualPlan);

@@ -1,10 +1,8 @@
-import { IsInt } from "class-validator";
 import {
   Column,
   DeleteDateColumn,
   Entity,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Exclude } from 'class-transformer';
 import { AnnualPlan } from "src/annual-plans/entities/annual-plan.entity";

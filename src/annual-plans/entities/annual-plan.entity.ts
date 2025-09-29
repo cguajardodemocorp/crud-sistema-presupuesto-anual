@@ -13,6 +13,7 @@ import { DetailPlan } from "src/detail-plans/entities/detail-plan.entity";
 import { Ceco } from "src/ceco/entities/ceco.entity";
 import { Country } from "src/country/entities/country.entity";
 import { Currency } from "src/currency/entities/currency.entity";
+import { CompanyName } from "src/company-name/entities/company-name.entity";
 
 
 @Entity('plan_presupuestario')
@@ -31,6 +32,11 @@ export class AnnualPlan {
 
   @Column()
   razon_social_id: number;
+  @ManyToOne(() => CompanyName, (companyName) => companyName.annualPlans, {
+    eager: true, //Para que siempre que se consulte un AnnualPlan, traiga la Razon Social asociada
+  })
+  @JoinColumn({ name: 'razon_social_id' })
+  companyName: CompanyName;
 
   @Column()
   ceco_id: number;
