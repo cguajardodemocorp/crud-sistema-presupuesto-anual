@@ -24,4 +24,4 @@ export class Account {
     @OneToMany (() => AnnualPlan, (annualPlan) => annualPlan.account)
     annualPlans: AnnualPlan[]; //Representa todos los AnnualPlan asociados a esta cuenta
 } 
-}
+
