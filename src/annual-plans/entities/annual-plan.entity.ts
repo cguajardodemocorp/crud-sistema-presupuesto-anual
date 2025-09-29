@@ -14,6 +14,7 @@ import { Ceco } from "src/ceco/entities/ceco.entity";
 import { Country } from "src/country/entities/country.entity";
 import { Currency } from "src/currency/entities/currency.entity";
 import { CompanyName } from "src/company-name/entities/company-name.entity";
+import { Account } from "src/account/entities/account.entity";
 
 
 @Entity('plan_presupuestario')
@@ -48,6 +49,11 @@ export class AnnualPlan {
 
   @Column()
   cuenta_id: number;
+  @ManyToOne(() => Account, (account) => account.annualPlans, {
+    eager: true, //Para que siempre que se consulte un AnnualPlan, traiga la Cuenta asociada
+  })
+  @JoinColumn({ name: 'cuenta_id' })
+  account: Account;
 
   @Column()
   area_id: number;

@@ -3,8 +3,9 @@ import { CreateCompanyNameDto } from './dto/create-company-name.dto';
 import { UpdateCompanyNameDto } from './dto/update-company-name.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CompanyName } from './entities/company-name.entity';
 import { BadRequestException } from '@nestjs/common';
+import { CompanyName } from './entities/company-name.entity';
+
 
 @Injectable()
 export class CompanyNameService {

@@ -49,9 +49,17 @@ export class AnnualPlansService {
         throw new BadRequestException('No existe una Razon Social activa con el nombre indicado');
       }
 
-      // Construir el objeto a guardar, usando el id de CECO, País, Moneda y Razon Social en las propiedades 'ceco_id', 'pais_id', 'moneda_id' y 'razon_social_id'
-     const { ceco, pais, moneda, razon_social, ...rest } = createAnnualPlanDto as any;
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id };
+      // Buscar Cuenta por nombre en lugar de id usando el campo 'cuenta' del DTO de AnnualPlan
+      const accountName = (createAnnualPlanDto as any).cuenta;
+      const accountEntities = await this.plansRepository.manager.getRepository('Account').find({ where: { nombre: accountName }, withDeleted: true });
+      const accountActivo = accountEntities.find(a => !a.deletedAt);
+      if (!accountActivo) {
+        throw new BadRequestException('No existe una Cuenta activa con el nombre indicado');
+      }
+
+      // Construir el objeto a guardar, usando el id de CECO, País, Moneda, Razon Social y Cuenta en las propiedades 'ceco_id', 'pais_id', 'moneda_id', 'razon_social_id' y 'cuenta_id'
+     const { ceco, pais, moneda, razon_social, cuenta, ...rest } = createAnnualPlanDto as any;
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id };
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
@@ -76,6 +84,7 @@ export class AnnualPlansService {
   }
 
   async update(id: number, updateAnnualPlanDto: UpdateAnnualPlanDto) {
+    //Validar que el Annual-plan exista y no esté borrado
     const annualPlan = await this.plansRepository.findOne({ where: { id }, withDeleted: true });
     if (!annualPlan) {
       throw new BadRequestException('AnnualPlan not found');
@@ -122,8 +131,8 @@ export class AnnualPlansService {
 
     // Validar y mapear Razon Social si se envía
     if ((updateAnnualPlanDto as any).razon_social) {
-      const CompanyName = (updateAnnualPlanDto as any).razon_social;
-      const companyNameEntities = await this.plansRepository.manager.getRepository('Company').find({ where: { nombre: CompanyName }, withDeleted: true });
+      const companyName = (updateAnnualPlanDto as any).razon_social;
+      const companyNameEntities = await this.plansRepository.manager.getRepository('Company').find({ where: { nombre: companyName }, withDeleted: true });
       const companyNameActivo = companyNameEntities.find(c => !c.deletedAt);
       if (!companyNameActivo) {
         throw new BadRequestException('No existe Razon social activa con el nombre indicado');
@@ -132,6 +141,17 @@ export class AnnualPlansService {
       delete (updateAnnualPlanDto as any).razon_social;
     }
 
+    // Validar y mapear Cuenta si se envía
+    if ((updateAnnualPlanDto as any).cuenta) {
+      const account = (updateAnnualPlanDto as any).cuenta;
+      const accountEntities = await this.plansRepository.manager.getRepository('Account').find({ where: { nombre: account }, withDeleted: true });
+      const accountActivo = accountEntities.find(c => !c.deletedAt);
+      if (!accountActivo) {
+        throw new BadRequestException('No existe una cuenta activa con el nombre indicado');
+      }
+      (updateAnnualPlanDto as any).cuenta_id = accountActivo.id;
+      delete (updateAnnualPlanDto as any).cuenta;
+    }
 
     Object.assign(annualPlan, updateAnnualPlanDto);
     return await this.plansRepository.save(annualPlan);

@@ -16,10 +16,10 @@ export class CreateAnnualPlanDto {
     razon_social: string; //Se recibe el valor de la columna nombre de la tabla RazonSocial y se valdia por id en el service
 
     @IsString()
-    ceco: string; //Se recibe el valor de la columna code de la tabala Ceco y se valdia por id en el service
+    ceco: string; //Se recibe el valor de la columna code de la tabla Ceco y se valdia por id en el service
 
-    @IsInt()
-    cuenta_id: number;
+    @IsString()
+    cuenta: string; //Se recibe el valor de la columna nombre de la tabla Cuenta y se valdia por id en el service
 
     @IsInt()
     area_id: number;
