@@ -65,9 +65,17 @@ export class AnnualPlansService {
         throw new BadRequestException('No existe un Area activa con el nombre indicado');
       }
 
+      // Buscar Recurso por nombre en lugar de id usando el campo 'resource' del DTO de AnnualPlan
+      const recursoName = (createAnnualPlanDto as any).resource;
+      const recursoEntities = await this.plansRepository.manager.getRepository('Resource').find({ where: { nombre: recursoName }, withDeleted: true });
+      const resourceActivo = recursoEntities.find(a => !a.deletedAt);
+      if (!resourceActivo) {
+        throw new BadRequestException('No existe un Recurso activo con el nombre indicado');
+      }
+
       // Construir el objeto a guardar, usando el id de CECO, País, Moneda, Razon Social y Cuenta en las propiedades 'ceco_id', 'pais_id', 'moneda_id', 'razon_social_id' y 'cuenta_id'
-     const { ceco, pais, moneda, razon_social, cuenta, area, ...rest } = createAnnualPlanDto as any;
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id };
+     const { ceco, pais, moneda, razon_social, cuenta, area, resource, ...rest } = createAnnualPlanDto as any;
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id, recurso_id: resourceActivo.id };
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
@@ -171,6 +179,18 @@ export class AnnualPlansService {
       }
       (updateAnnualPlanDto as any).area_id = areaActivo.id;
       delete (updateAnnualPlanDto as any).area;
+    }
+
+    // Validar y mapear Recurso si se envía
+    if ((updateAnnualPlanDto as any).recurso) {
+      const resource = (updateAnnualPlanDto as any).recurso;
+      const resourceEntities = await this.plansRepository.manager.getRepository('Resource').find({ where: { nombre: resource }, withDeleted: true });
+      const resourceActivo = resourceEntities.find(c => !c.deletedAt);
+      if (!resourceActivo) {
+        throw new BadRequestException('No existe un Recurso activo con el nombre indicado');
+      }
+      (updateAnnualPlanDto as any).recurso_id = resourceActivo.id;
+      delete (updateAnnualPlanDto as any).recurso;
     }
 
     Object.assign(annualPlan, updateAnnualPlanDto);

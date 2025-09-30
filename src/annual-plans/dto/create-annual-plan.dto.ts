@@ -24,9 +24,9 @@ export class CreateAnnualPlanDto {
     @IsNotEmpty()
     area: string; //Se recibe el valor de la columna nombre de la tabla Area y se valdia por id en el service
 
-    @IsInt()
+    @IsString()
     @IsNotEmpty()
-    recurso_id: number;
+    recurso: string; //Se recibe el valor de la columna nombre de la tabla Recurso y se valdia por id en el service
 
     @IsInt()
     @IsNotEmpty()

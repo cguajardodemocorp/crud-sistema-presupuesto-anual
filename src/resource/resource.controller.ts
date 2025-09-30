@@ -18,17 +18,17 @@ export class ResourceController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resourceService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.resourceService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResourceDto: UpdateResourceDto) {
-    return this.resourceService.update(+id, updateResourceDto);
+  update(@Param('id') id: number, @Body() updateResourceDto: UpdateResourceDto) {
+    return this.resourceService.update(id, updateResourceDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resourceService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.resourceService.remove(id);
   }
 }
