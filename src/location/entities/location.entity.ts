@@ -9,6 +9,7 @@ import { AnnualPlan } from "src/annual-plans/entities/annual-plan.entity";
 
 @Entity('localidad') //Se personaliza el nombre de la tabla
 export class Location {
+    @Column({ primary: true, generated: true })
     id: number;
 
     @Column({ type: 'varchar', nullable: false })

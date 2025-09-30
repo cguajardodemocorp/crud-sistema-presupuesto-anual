@@ -85,9 +85,9 @@ export class AnnualPlansService {
       }
 
 
-      // Construir el objeto a guardar, usando el id de CECO, País, Moneda, Razon Social y Cuenta en las propiedades 'ceco_id', 'pais_id', 'moneda_id', 'razon_social_id' y 'cuenta_id'
+      // Construir el objeto a guardar, usando el id de CECO, País, Moneda, Razon Social, Localidad y Cuenta en las propiedades 'ceco_id', 'pais_id', 'moneda_id', 'razon_social_id', 'localidad_id' y 'cuenta_id'
      const { ceco, pais, moneda, razon_social, cuenta, area, localidad,  ...rest } = createAnnualPlanDto as any; //Agregar resource, en el listado, cuando se relacione id de recurso
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id, localidad_id: locationActivo}; //Agregar , recurso_id: resourceActivo.id cuando se relacione id de recurso
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id, localidad_id: locationActivo.id}; //Agregar , recurso_id: resourceActivo.id cuando se relacione id de recurso
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
