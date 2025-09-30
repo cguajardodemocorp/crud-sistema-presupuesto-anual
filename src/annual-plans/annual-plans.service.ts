@@ -65,6 +65,8 @@ export class AnnualPlansService {
         throw new BadRequestException('No existe un Area activa con el nombre indicado');
       }
 
+      //Agregar la siguiente validacion cuando se relacione id de recurso con annual-plan
+      /*
       // Buscar Recurso por nombre en lugar de id usando el campo 'resource' del DTO de AnnualPlan
       const recursoName = (createAnnualPlanDto as any).resource;
       const recursoEntities = await this.plansRepository.manager.getRepository('Resource').find({ where: { nombre: recursoName }, withDeleted: true });
@@ -72,10 +74,11 @@ export class AnnualPlansService {
       if (!resourceActivo) {
         throw new BadRequestException('No existe un Recurso activo con el nombre indicado');
       }
+      */
 
       // Construir el objeto a guardar, usando el id de CECO, País, Moneda, Razon Social y Cuenta en las propiedades 'ceco_id', 'pais_id', 'moneda_id', 'razon_social_id' y 'cuenta_id'
-     const { ceco, pais, moneda, razon_social, cuenta, area, resource, ...rest } = createAnnualPlanDto as any;
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id, recurso_id: resourceActivo.id };
+     const { ceco, pais, moneda, razon_social, cuenta, area,  ...rest } = createAnnualPlanDto as any; //Agregar resource, en el listado, cuando se relacione id de recurso
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id}; //Agregar , recurso_id: resourceActivo.id cuando se relacione id de recurso
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
@@ -181,6 +184,8 @@ export class AnnualPlansService {
       delete (updateAnnualPlanDto as any).area;
     }
 
+    //Agregar cuando se relacione id de recurso con annual-plan
+    /*
     // Validar y mapear Recurso si se envía
     if ((updateAnnualPlanDto as any).recurso) {
       const resource = (updateAnnualPlanDto as any).recurso;
@@ -191,7 +196,7 @@ export class AnnualPlansService {
       }
       (updateAnnualPlanDto as any).recurso_id = resourceActivo.id;
       delete (updateAnnualPlanDto as any).recurso;
-    }
+    } */
 
     Object.assign(annualPlan, updateAnnualPlanDto);
     return await this.plansRepository.save(annualPlan);

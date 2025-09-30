@@ -16,7 +16,7 @@ import { Currency } from "src/currency/entities/currency.entity";
 import { CompanyName } from "src/company-name/entities/company-name.entity";
 import { Account } from "src/account/entities/account.entity";
 import { Area } from "src/area/entities/area.entity";
-import { Resource } from "src/resource/entities/resource.entity";
+import { Resource } from "src/resource/entities/resource.entity"; //Se usa cuando se relacione id de recurso con annual-plan
 
 
 @Entity('plan_presupuestario')
@@ -65,6 +65,7 @@ export class AnnualPlan {
   @JoinColumn({ name: 'area_id' })
   area: Area;
 
+  /* Agregar esta relacion cuando se relacione id de recurso
   @Column()
   recurso_id: number;
   @ManyToOne(() => Resource, (resource) => resource.annualPlans, {
@@ -72,6 +73,9 @@ export class AnnualPlan {
   })
   @JoinColumn({ name: 'recurso_id' })
   resource: Resource;
+  */
+ @Column()
+ recurso: string;
 
   @Column()
   localidad_id: number;

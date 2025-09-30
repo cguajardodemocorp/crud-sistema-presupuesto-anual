@@ -20,7 +20,9 @@ export class Resource {
     @DeleteDateColumn()
     deletedAt: Date;
 
+    /* descomentar cuando se relacione id de recurso con annual-plan
     // Relación 1:N con AnnualPlan
     @OneToMany (() => AnnualPlan, (annualPlan) => annualPlan.resource)
     annualPlans: AnnualPlan[]; //Representa todos los AnnualPlan asociados a este recurso
+    */
 }

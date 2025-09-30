@@ -26,7 +26,7 @@ export class CreateAnnualPlanDto {
 
     @IsString()
     @IsNotEmpty()
-    recurso: string; //Se recibe el valor de la columna nombre de la tabla Recurso y se valdia por id en el service
+    recurso: string; //Se recibe el valor de la columna nombre de la tabla Recurso y se valdia por id en el service cuando se relacione, por ahora se recibe solo texto
 
     @IsInt()
     @IsNotEmpty()
