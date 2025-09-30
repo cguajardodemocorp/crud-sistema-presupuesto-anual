@@ -14,6 +14,13 @@ export class ResourceService {
   ) {}
 
   async create(createResourceDto: CreateResourceDto) {
+      // Validar que el nombre no sean solo espacios en blanco o un solo espacio en blanco, solo letras, números, espacios, puntos y guiones, sin espacios al inicio/fin
+      if (createResourceDto.nombre) {
+        createResourceDto.nombre = createResourceDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(createResourceDto.nombre)) {
+          throw new BadRequestException('El nombre del recurso solo puede contener letras, números, espacios, puntos y guiones');
+        }
+      }
     try {
       // Permitir crear solo si todos los Recursos con ese mismo nombre están borrados en otros ID
       const resourceConNombre = await this.resourceRepository.find({ where: { nombre: createResourceDto.nombre }, withDeleted: true });
@@ -48,8 +55,8 @@ export class ResourceService {
       // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
       if (updateResourceDto.nombre) {
         updateResourceDto.nombre = updateResourceDto.nombre.trim();
-        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateResourceDto.nombre)) {
-          throw new BadRequestException('El nombre del recurso solo puede contener letras y espacios');
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(updateResourceDto.nombre)) {
+          throw new BadRequestException('El nombre del recurso solo puede contener letras, números, espacios, puntos y guiones');
         }
       }
     try {

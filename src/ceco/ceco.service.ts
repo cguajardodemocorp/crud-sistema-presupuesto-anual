@@ -14,6 +14,13 @@ export class CecoService {
   ) {}
 
   async create(createCecoDto: CreateCecoDto) {
+      // Validar que el código no sean solo espacios en blanco o un solo espacio en blanco, solo letras, números, espacios, puntos y guiones, sin espacios al inicio/fin
+      if (createCecoDto.codigo) {
+        createCecoDto.codigo = createCecoDto.codigo.trim();
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(createCecoDto.codigo)) {
+          throw new BadRequestException('El código del CECO solo puede contener letras, números, espacios, puntos y guiones');
+        }
+      }
     try {
         // Permitir crear si todos los CECO con ese código están borrados en otros ID
         const cecosConCodigo = await this.cecoRepository.find({ where: { codigo: createCecoDto.codigo }, withDeleted: true });
@@ -48,8 +55,8 @@ export class CecoService {
       // Validar que el nuevo código no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del código
       if (updateCecoDto.codigo) {
         updateCecoDto.codigo = updateCecoDto.codigo.trim();
-        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateCecoDto.codigo)) {
-          throw new BadRequestException('El código del CECO solo puede contener letras y espacios');
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(updateCecoDto.codigo)) {
+          throw new BadRequestException('El código del CECO solo puede contener letras, números, espacios, puntos y guiones');
         }
       }
     try {

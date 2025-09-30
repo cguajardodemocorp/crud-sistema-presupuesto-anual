@@ -14,6 +14,20 @@ export class AreaService {
   ) { }
 
   async create(createAreaDto: CreateAreaDto) {
+      // Validar que el nombre no sean solo espacios en blanco o un solo espacio en blanco, solo letras, números, espacios, puntos y guiones, sin espacios al inicio/fin
+      if (createAreaDto.nombre) {
+        createAreaDto.nombre = createAreaDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(createAreaDto.nombre)) {
+          throw new BadRequestException('El nombre del área solo puede contener letras, números, espacios, puntos y guiones');
+        }
+      }
+      // Validar que el nombre no sean solo espacios en blanco o un solo espacio en blanco, solo letras o numeros y espacios, sin espacios al inicio/fin
+      if (createAreaDto.nombre) {
+        createAreaDto.nombre = createAreaDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(createAreaDto.nombre)) {
+          throw new BadRequestException('El nombre del área solo puede contener letras, números, espacios, puntos y guiones');
+        }
+      }
     try {
       // Permitir crear solo si todos las Areas con ese mismo nombre están borrados en otros ID
       const areaConNombre = await this.areaRepository.find({ where: { nombre: createAreaDto.nombre }, withDeleted: true });
@@ -48,8 +62,8 @@ export class AreaService {
       // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
       if (updateAreaDto.nombre) {
         updateAreaDto.nombre = updateAreaDto.nombre.trim();
-        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateAreaDto.nombre)) {
-          throw new BadRequestException('El nombre del área solo puede contener letras y espacios');
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(updateAreaDto.nombre)) {
+          throw new BadRequestException('El nombre del área solo puede contener letras, números, espacios, puntos y guiones');
         }
       }
     try {

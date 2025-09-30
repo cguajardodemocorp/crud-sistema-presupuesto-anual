@@ -14,6 +14,13 @@ export class CurrencyService {
   ) {}
 
   async create(createCurrencyDto: CreateCurrencyDto) {
+      // Validar que el código no sean solo espacios en blanco o un solo espacio en blanco, solo letras, números, espacios, puntos y guiones, sin espacios al inicio/fin
+      if (createCurrencyDto.codigo) {
+        createCurrencyDto.codigo = createCurrencyDto.codigo.trim();
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(createCurrencyDto.codigo)) {
+          throw new BadRequestException('El código de la moneda solo puede contener letras, números, espacios, puntos y guiones');
+        }
+      }
     try {
         // Permitir crear si todos los Monedas con ese código están borrados en otros ID
         const monedasConCodigo = await this.currencyRepository.find({ where: { codigo: createCurrencyDto.codigo }, withDeleted: true });
@@ -48,8 +55,8 @@ export class CurrencyService {
       // Validar que el nuevo código no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del código
       if (updateCurrencyDto.codigo) {
         updateCurrencyDto.codigo = updateCurrencyDto.codigo.trim();
-        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateCurrencyDto.codigo)) {
-          throw new BadRequestException('El código de la moneda solo puede contener letras y espacios');
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(updateCurrencyDto.codigo)) {
+          throw new BadRequestException('El código de la moneda solo puede contener letras, números, espacios, puntos y guiones');
         }
       }
     try {

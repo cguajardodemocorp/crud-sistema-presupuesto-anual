@@ -15,6 +15,13 @@ export class CompanyNameService {
   ) { }
 
   async create(createCompanyNameDto: CreateCompanyNameDto) {
+      // Validar que el nombre no sean solo espacios en blanco o un solo espacio en blanco, solo letras, números, espacios, puntos y guiones, sin espacios al inicio/fin
+      if (createCompanyNameDto.nombre) {
+        createCompanyNameDto.nombre = createCompanyNameDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(createCompanyNameDto.nombre)) {
+          throw new BadRequestException('El nombre de la razón social solo puede contener letras, números, espacios, puntos y guiones');
+        }
+      }
     try {
       // Permitir crear solo si todos los razon social con ese mismo nombre están borrados en otros ID
       const razonSocialConNombre = await this.companyNameRepository.find({ where: { nombre: createCompanyNameDto.nombre }, withDeleted: true });
@@ -49,8 +56,8 @@ export class CompanyNameService {
       // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
       if (updateCompanyNameDto.nombre) {
         updateCompanyNameDto.nombre = updateCompanyNameDto.nombre.trim();
-        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateCompanyNameDto.nombre)) {
-          throw new BadRequestException('El nombre de la razón social solo puede contener letras y espacios');
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(updateCompanyNameDto.nombre)) {
+          throw new BadRequestException('El nombre de la razón social solo puede contener letras, números, espacios, puntos y guiones');
         }
       }
     try {

@@ -14,6 +14,13 @@ export class LocationService {
   ) { }
 
   async create(createLocationDto: CreateLocationDto) {
+      // Validar que el nombre no sean solo espacios en blanco o un solo espacio en blanco, solo letras, números, espacios, puntos y guiones, sin espacios al inicio/fin
+      if (createLocationDto.nombre) {
+        createLocationDto.nombre = createLocationDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(createLocationDto.nombre)) {
+          throw new BadRequestException('El nombre de la localidad solo puede contener letras, números, espacios, puntos y guiones');
+        }
+      }
     try {
       // Permitir crear solo si todos las Localidades con ese mismo nombre están borrados en otros ID
       const localidadConNombre = await this.locationRepository.find({ where: { nombre: createLocationDto.nombre }, withDeleted: true });
@@ -48,8 +55,8 @@ export class LocationService {
       // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
       if (updateLocationDto.nombre) {
         updateLocationDto.nombre = updateLocationDto.nombre.trim();
-        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateLocationDto.nombre)) {
-          throw new BadRequestException('El nombre de la localidad solo puede contener letras y espacios');
+        if (!/^(?! )[a-zA-Z0-9\s.\-]+(?<! )$/.test(updateLocationDto.nombre)) {
+          throw new BadRequestException('El nombre de la localidad solo puede contener letras, números, espacios, puntos y guiones');
         }
       }
     try {
