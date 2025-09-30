@@ -57,9 +57,17 @@ export class AnnualPlansService {
         throw new BadRequestException('No existe una Cuenta activa con el nombre indicado');
       }
 
+      // Buscar Area por nombre en lugar de id usando el campo 'area' del DTO de AnnualPlan
+      const areaName = (createAnnualPlanDto as any).area;
+      const areaEntities = await this.plansRepository.manager.getRepository('Area').find({ where: { nombre: areaName }, withDeleted: true });
+      const areaActivo = areaEntities.find(a => !a.deletedAt);
+      if (!areaActivo) {
+        throw new BadRequestException('No existe un Area activa con el nombre indicado');
+      }
+
       // Construir el objeto a guardar, usando el id de CECO, País, Moneda, Razon Social y Cuenta en las propiedades 'ceco_id', 'pais_id', 'moneda_id', 'razon_social_id' y 'cuenta_id'
-     const { ceco, pais, moneda, razon_social, cuenta, ...rest } = createAnnualPlanDto as any;
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id };
+     const { ceco, pais, moneda, razon_social, cuenta, area, ...rest } = createAnnualPlanDto as any;
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id };
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
@@ -151,6 +159,18 @@ export class AnnualPlansService {
       }
       (updateAnnualPlanDto as any).cuenta_id = accountActivo.id;
       delete (updateAnnualPlanDto as any).cuenta;
+    }
+
+    // Validar y mapear Area si se envía
+    if ((updateAnnualPlanDto as any).area) {
+      const area = (updateAnnualPlanDto as any).area;
+      const areaEntities = await this.plansRepository.manager.getRepository('Area').find({ where: { nombre: area }, withDeleted: true });
+      const areaActivo = areaEntities.find(c => !c.deletedAt);
+      if (!areaActivo) {
+        throw new BadRequestException('No existe un Area activa con el nombre indicado');
+      }
+      (updateAnnualPlanDto as any).area_id = areaActivo.id;
+      delete (updateAnnualPlanDto as any).area;
     }
 
     Object.assign(annualPlan, updateAnnualPlanDto);

@@ -15,6 +15,7 @@ import { Country } from "src/country/entities/country.entity";
 import { Currency } from "src/currency/entities/currency.entity";
 import { CompanyName } from "src/company-name/entities/company-name.entity";
 import { Account } from "src/account/entities/account.entity";
+import { Area } from "src/area/entities/area.entity";
 
 
 @Entity('plan_presupuestario')
@@ -57,6 +58,11 @@ export class AnnualPlan {
 
   @Column()
   area_id: number;
+  @ManyToOne(() => Area, (area) => area.annualPlans, {
+    eager: true, //Para que siempre que se consulte un AnnualPlan, traiga el Area asociada
+  })
+  @JoinColumn({ name: 'area_id' })
+  area: Area;
 
   @Column()
   recurso_id: number;
