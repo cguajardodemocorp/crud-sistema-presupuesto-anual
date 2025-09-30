@@ -1,9 +1,9 @@
 import {
-  Column,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne
+    Column,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne
 } from "typeorm";
 import { Exclude } from 'class-transformer';
 import { Country } from "src/country/entities/country.entity";
@@ -77,9 +77,9 @@ export class ActualCost {
     @Column({ type: 'timestamp' })
     fecha_carga: Date;
 
-      //fecha de soft delete
+    //fecha de soft delete
     @Exclude()
-     @DeleteDateColumn()
-     deletedAt: Date;
+    @DeleteDateColumn()
+    deletedAt: Date;
 
 }
