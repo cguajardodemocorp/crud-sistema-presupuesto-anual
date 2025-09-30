@@ -45,6 +45,13 @@ export class ResourceService {
   }
 
   async update(id: number, updateResourceDto: UpdateResourceDto) {
+      // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
+      if (updateResourceDto.nombre) {
+        updateResourceDto.nombre = updateResourceDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateResourceDto.nombre)) {
+          throw new BadRequestException('El nombre del recurso solo puede contener letras y espacios');
+        }
+      }
     try {
       const resourceName = await this.resourceRepository.findOne({ where: { id }, withDeleted: true });
       if (!resourceName) {

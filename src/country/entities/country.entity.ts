@@ -6,6 +6,7 @@ import {
 } from "typeorm";
 import { Exclude } from 'class-transformer';
 import { AnnualPlan } from "src/annual-plans/entities/annual-plan.entity";
+import { IsNotEmpty, IsString } from "class-validator";
 
 @Entity('pais') //Se personaliza el nombre de la tabla en la base de datos, por defecto sería country
 export class Country {
@@ -13,6 +14,8 @@ export class Country {
     id: number;
     
     @Column({ type: 'varchar', nullable: false })
+    @IsString()
+    @IsNotEmpty()
     nombre: string;
 
     //fecha de soft delete

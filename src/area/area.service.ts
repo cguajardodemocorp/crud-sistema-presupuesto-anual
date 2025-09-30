@@ -45,6 +45,13 @@ export class AreaService {
   }
 
   async update(id: number, updateAreaDto: UpdateAreaDto) {
+      // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
+      if (updateAreaDto.nombre) {
+        updateAreaDto.nombre = updateAreaDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateAreaDto.nombre)) {
+          throw new BadRequestException('El nombre del área solo puede contener letras y espacios');
+        }
+      }
     try {
       const areaName = await this.areaRepository.findOne({ where: { id }, withDeleted: true });
       if (!areaName) {

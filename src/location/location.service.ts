@@ -45,6 +45,13 @@ export class LocationService {
   }
 
   async update(id: number, updateLocationDto: UpdateLocationDto) {
+      // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
+      if (updateLocationDto.nombre) {
+        updateLocationDto.nombre = updateLocationDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateLocationDto.nombre)) {
+          throw new BadRequestException('El nombre de la localidad solo puede contener letras y espacios');
+        }
+      }
     try {
       const locationName = await this.locationRepository.findOne({ where: { id }, withDeleted: true });
       if (!locationName) {

@@ -45,6 +45,13 @@ export class CecoService {
   }
 
   async update(id: number, updateCecoDto: UpdateCecoDto) {
+      // Validar que el nuevo código no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del código
+      if (updateCecoDto.codigo) {
+        updateCecoDto.codigo = updateCecoDto.codigo.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateCecoDto.codigo)) {
+          throw new BadRequestException('El código del CECO solo puede contener letras y espacios');
+        }
+      }
     try {
       const ceco = await this.cecoRepository.findOne({ where: { id }, withDeleted: true });
       if (!ceco) {

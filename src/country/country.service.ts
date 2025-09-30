@@ -60,6 +60,15 @@ export class CountryService {
           throw new BadRequestException('El pais ya existe en otro registro');
         }
       }
+
+      // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
+      if (updateCountryDto.nombre) {
+        updateCountryDto.nombre = updateCountryDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateCountryDto.nombre)) {
+          throw new BadRequestException('El nombre del país solo puede contener letras y espacios');
+        }
+      }
+
       Object.assign(country, updateCountryDto);
       return await this.countryRepository.save(country);
     } catch (error) {

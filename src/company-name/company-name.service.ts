@@ -46,6 +46,13 @@ export class CompanyNameService {
   }
 
   async update(id: number, updateCompanyNameDto: UpdateCompanyNameDto) {
+      // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
+      if (updateCompanyNameDto.nombre) {
+        updateCompanyNameDto.nombre = updateCompanyNameDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateCompanyNameDto.nombre)) {
+          throw new BadRequestException('El nombre de la razón social solo puede contener letras y espacios');
+        }
+      }
     try {
       const companyName = await this.companyNameRepository.findOne({ where: { id }, withDeleted: true });
       if (!companyName) {

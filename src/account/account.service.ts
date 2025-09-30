@@ -45,6 +45,13 @@ export class AccountService {
   }
 
   async update(id: number, updateAccountDto: UpdateAccountDto) {
+      // Validar que el nuevo nombre no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del nombre
+      if (updateAccountDto.nombre) {
+        updateAccountDto.nombre = updateAccountDto.nombre.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateAccountDto.nombre)) {
+          throw new BadRequestException('El nombre de la cuenta solo puede contener letras y espacios');
+        }
+      }
     try {
       const accountName = await this.accountRepository.findOne({ where: { id }, withDeleted: true });
       if (!accountName) {

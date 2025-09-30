@@ -45,6 +45,13 @@ export class CurrencyService {
   }
 
   async update(id: number, updateCurrencyDto: UpdateCurrencyDto) {
+      // Validar que el nuevo código no sean solo espacios en blanco o un solo espacio en blanco, si no que solo contenga caracteres alfabéticos y espacios, eliminando los espacios al inicio y al final del código
+      if (updateCurrencyDto.codigo) {
+        updateCurrencyDto.codigo = updateCurrencyDto.codigo.trim();
+        if (!/^(?! )[a-zA-Z\s]+(?<! )$/.test(updateCurrencyDto.codigo)) {
+          throw new BadRequestException('El código de la moneda solo puede contener letras y espacios');
+        }
+      }
     try {
       const moneda = await this.currencyRepository.findOne({ where: { id }, withDeleted: true });
       if (!moneda) {
