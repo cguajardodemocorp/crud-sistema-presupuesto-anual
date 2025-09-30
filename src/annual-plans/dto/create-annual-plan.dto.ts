@@ -6,31 +6,31 @@ export class CreateAnnualPlanDto {
     //Validacion para que no sea nulo
     @IsString()
     @IsNotEmpty()
-    pais: string; //Se recibe el valor de la columna nombre de la tabla Pais y se valdia por id en el service
+    pais: string; //Se recibe el valor de la columna nombre de la tabla Pais y se valida por id en el service
 
     @IsString()
     @IsNotEmpty()
-    razon_social: string; //Se recibe el valor de la columna nombre de la tabla RazonSocial y se valdia por id en el service
+    razon_social: string; //Se recibe el valor de la columna nombre de la tabla RazonSocial y se valida por id en el service
 
     @IsString()
     @IsNotEmpty()
-    ceco: string; //Se recibe el valor de la columna code de la tabla Ceco y se valdia por id en el service
+    ceco: string; //Se recibe el valor de la columna code de la tabla Ceco y se valida por id en el service
 
     @IsString()
     @IsNotEmpty()
-    cuenta: string; //Se recibe el valor de la columna nombre de la tabla Cuenta y se valdia por id en el service
+    cuenta: string; //Se recibe el valor de la columna nombre de la tabla Cuenta y se valida por id en el service
 
     @IsString()
     @IsNotEmpty()
-    area: string; //Se recibe el valor de la columna nombre de la tabla Area y se valdia por id en el service
+    area: string; //Se recibe el valor de la columna nombre de la tabla Area y se valida por id en el service
 
     @IsString()
     @IsNotEmpty()
-    recurso: string; //Se recibe el valor de la columna nombre de la tabla Recurso y se valdia por id en el service cuando se relacione, por ahora se recibe solo texto
+    recurso: string; //Se recibe el valor de la columna nombre de la tabla Recurso y se valida por id en el service cuando se relacione, por ahora se recibe solo texto
 
-    @IsInt()
+    @IsString()
     @IsNotEmpty()
-    localidad_id: number;
+    localidad: string; //Se recibe el valor de la columna nombre de la tabla Localidad y se valida por id en el service
 
     @IsNumber()
     @IsNotEmpty()
@@ -38,7 +38,7 @@ export class CreateAnnualPlanDto {
 
     @IsString()
     @IsNotEmpty()
-    moneda: string; //Se recibe el valor de la columna code de la tabala Ceco y se valdia por id en el service
+    moneda: string; //Se recibe el valor de la columna code de la tabala Ceco y se valida por id en el service
 
     @IsInt()
     @IsNotEmpty()

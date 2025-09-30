@@ -76,9 +76,18 @@ export class AnnualPlansService {
       }
       */
 
+      // Buscar Localidad por nombre en lugar de id usando el campo 'localidad' del DTO de AnnualPlan
+      const locationName = (createAnnualPlanDto as any).localidad;
+      const locationEntities = await this.plansRepository.manager.getRepository('Location').find({ where: { nombre: locationName }, withDeleted: true });
+      const locationActivo = locationEntities.find(a => !a.deletedAt);
+      if (!locationActivo) {
+        throw new BadRequestException('No existe una Localidad activa con el nombre indicado');
+      }
+
+
       // Construir el objeto a guardar, usando el id de CECO, País, Moneda, Razon Social y Cuenta en las propiedades 'ceco_id', 'pais_id', 'moneda_id', 'razon_social_id' y 'cuenta_id'
-     const { ceco, pais, moneda, razon_social, cuenta, area,  ...rest } = createAnnualPlanDto as any; //Agregar resource, en el listado, cuando se relacione id de recurso
-     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id}; //Agregar , recurso_id: resourceActivo.id cuando se relacione id de recurso
+     const { ceco, pais, moneda, razon_social, cuenta, area, localidad,  ...rest } = createAnnualPlanDto as any; //Agregar resource, en el listado, cuando se relacione id de recurso
+     const annualPlanData = { ...rest, ceco_id: cecoActivo.id, pais_id: paisActivo.id, moneda_id: currencyActivo.id, razon_social_id: razonSocialActivo.id, cuenta_id: accountActivo.id, area_id: areaActivo.id, localidad_id: locationActivo}; //Agregar , recurso_id: resourceActivo.id cuando se relacione id de recurso
       const annualPlan = this.plansRepository.create(annualPlanData);
       return await this.plansRepository.save(annualPlan);
     } catch (error) {
@@ -197,6 +206,19 @@ export class AnnualPlansService {
       (updateAnnualPlanDto as any).recurso_id = resourceActivo.id;
       delete (updateAnnualPlanDto as any).recurso;
     } */
+
+
+    // Validar y mapear localidad si se envía
+    if ((updateAnnualPlanDto as any).localidad) {
+      const localidad = (updateAnnualPlanDto as any).localidad;
+      const localidadEntities = await this.plansRepository.manager.getRepository('Location').find({ where: { nombre: localidad }, withDeleted: true });
+      const localidadActivo = localidadEntities.find(c => !c.deletedAt);
+      if (!localidadActivo) {
+        throw new BadRequestException('No existe una Localidad activa con el nombre indicado');
+      }
+      (updateAnnualPlanDto as any).localidad_id = localidadActivo.id;
+      delete (updateAnnualPlanDto as any).localidad;
+    }
 
     Object.assign(annualPlan, updateAnnualPlanDto);
     return await this.plansRepository.save(annualPlan);

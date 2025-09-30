@@ -17,6 +17,7 @@ import { CompanyName } from "src/company-name/entities/company-name.entity";
 import { Account } from "src/account/entities/account.entity";
 import { Area } from "src/area/entities/area.entity";
 import { Resource } from "src/resource/entities/resource.entity"; //Se usa cuando se relacione id de recurso con annual-plan
+import { Location } from "src/location/entities/location.entity";
 
 
 @Entity('plan_presupuestario')
@@ -79,6 +80,11 @@ export class AnnualPlan {
 
   @Column()
   localidad_id: number;
+  @ManyToOne(() => Location, (location) => location.annualPlans, {
+    eager: true, //Para que siempre que se consulte un AnnualPlan, traiga la Localidad asociada
+  })
+  @JoinColumn({ name: 'localidad_id' })
+  location: Location;
 
   @Column()
   tarifa: number;
