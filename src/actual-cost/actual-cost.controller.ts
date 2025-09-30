@@ -18,17 +18,17 @@ export class ActualCostController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.actualCostService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.actualCostService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateActualCostDto: UpdateActualCostDto) {
-    return this.actualCostService.update(+id, updateActualCostDto);
+  update(@Param('id') id: number, @Body() updateActualCostDto: UpdateActualCostDto) {
+    return this.actualCostService.update(id, updateActualCostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.actualCostService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.actualCostService.remove(id);
   }
 }

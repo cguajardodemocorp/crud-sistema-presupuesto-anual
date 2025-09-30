@@ -1,11 +1,9 @@
-import { IsInt, MATCHES } from "class-validator";
 import {
   Column,
   DeleteDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
-  PrimaryGeneratedColumn,
   ManyToOne
 } from "typeorm";
 import { Exclude } from 'class-transformer';

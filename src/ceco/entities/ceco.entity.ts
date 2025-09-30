@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { Exclude } from 'class-transformer';
 import { AnnualPlan } from "src/annual-plans/entities/annual-plan.entity";
+import { ActualCost } from "src/actual-cost/entities/actual-cost.entity";
 
 @Entity('ceco')
 export class Ceco {
@@ -28,5 +29,9 @@ export class Ceco {
     // Relación 1:N con AnnualPlan
     @OneToMany (() => AnnualPlan, (annualPlan) => annualPlan.ceco)
     annualPlans: AnnualPlan[]; //Representa todos los AnnualPlan asociados a este Ceco
+
+    // Relación 1:N con ActualCost
+    @OneToMany (() => ActualCost, (actualCost) => actualCost.ceco)
+    actualCosts: ActualCost[]; //Representa todos los ActualCost asociados a este Ceco
 
 }

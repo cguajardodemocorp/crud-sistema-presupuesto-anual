@@ -9,6 +9,6 @@ import { AnnualPlan } from './entities/annual-plan.entity';
   imports: [TypeOrmModule.forFeature([AnnualPlan])],
   controllers: [AnnualPlansController],
   providers: [AnnualPlansService],
-  exports: [TypeOrmModule], //se exporta para ser accedido de otra tabla que tenga dependencia, ej plan annual
+  exports: [TypeOrmModule], //se exporta para ser accedido de otra tabla que tenga dependencia, ej plan detalle
 })
 export class AnnualPlansModule {}
