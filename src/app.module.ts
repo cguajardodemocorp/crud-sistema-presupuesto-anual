@@ -26,7 +26,7 @@ import { ActualCostModule } from './actual-cost/actual-cost.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true, // never use TRUE in production
+      synchronize: false, // never use TRUE in production
     }),
     AnnualPlansModule,
     DetailPlansModule,
