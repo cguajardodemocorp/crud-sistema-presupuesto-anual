@@ -16,7 +16,7 @@ export class ActualCostService {
   async create(createActualCostDto: CreateActualCostDto) {
     try {
 
-      // Buscar País por nombre en lugar de id usando el campo 'pais' del DTO de AnnualPlan
+      // Buscar País por nombre en lugar de id usando el campo 'pais' del DTO de ActualCost
       const paisName = (createActualCostDto as any).pais;
       const paisEntities = await this.actualCostRepository.manager.getRepository('Country').find({ where: { nombre: paisName }, withDeleted: true });
       const paisActivo = paisEntities.find(p => !p.deletedAt);
@@ -24,7 +24,7 @@ export class ActualCostService {
         throw new BadRequestException('No existe un país activo con el nombre indicado');
       }
 
-      // Buscar Razon Social por nombre en lugar de id usando el campo 'razon_social' del DTO de AnnualPlan
+      // Buscar Razon Social por nombre en lugar de id usando el campo 'razon_social' del DTO de ActualCost
       const razonSocialName = (createActualCostDto as any).razon_social;
       const razonSocialEntities = await this.actualCostRepository.manager.getRepository('CompanyName').find({ where: { nombre: razonSocialName }, withDeleted: true });
       const razonSocialActivo = razonSocialEntities.find(r => !r.deletedAt);
@@ -38,9 +38,9 @@ export class ActualCostService {
       const cecoActivo = cecoEntities.find(c => !c.deletedAt);
       if (!cecoActivo) {
         throw new BadRequestException('No existe un CECO activo con el código indicado');
-      } 
-  
-      // Buscar Cuenta por nombre en lugar de id usando el campo 'cuenta' del DTO de AnnualPlan
+      }
+
+      // Buscar Cuenta por nombre en lugar de id usando el campo 'cuenta' del DTO de ActualCost
       const accountName = (createActualCostDto as any).cuenta;
       const accountEntities = await this.actualCostRepository.manager.getRepository('Account').find({ where: { nombre: accountName }, withDeleted: true });
       const accountActivo = accountEntities.find(a => !a.deletedAt);
@@ -106,10 +106,10 @@ export class ActualCostService {
       delete (updateActualCostDto as any).pais;
     }
 
-    // Validar y mapear Razon Social si se envía
+    // Validar y mapear Razon Social por nombre si se envía
     if ((updateActualCostDto as any).razon_social) {
       const companyName = (updateActualCostDto as any).razon_social;
-      const companyNameEntities = await this.actualCostRepository.manager.getRepository('Company').find({ where: { nombre: companyName }, withDeleted: true });
+      const companyNameEntities = await this.actualCostRepository.manager.getRepository('CompanyName').find({ where: { nombre: companyName }, withDeleted: true });
       const companyNameActivo = companyNameEntities.find(c => !c.deletedAt);
       if (!companyNameActivo) {
         throw new BadRequestException('No existe Razon social activa con el nombre indicado');
@@ -142,13 +142,13 @@ export class ActualCostService {
       delete (updateActualCostDto as any).cuenta;
     }
 
-    // Validar y mapear Moneda si se envía
+    // Validar y mapear Moneda  segun codigo si se envía
     if ((updateActualCostDto as any).moneda) {
-      const currencName = (updateActualCostDto as any).moneda;
-      const currencyEntities = await this.actualCostRepository.manager.getRepository('Currency').find({ where: { nombre: currencName }, withDeleted: true });
+      const currencyCode = (updateActualCostDto as any).moneda;
+      const currencyEntities = await this.actualCostRepository.manager.getRepository('Currency').find({ where: { codigo: currencyCode }, withDeleted: true });
       const currencyActivo = currencyEntities.find(c => !c.deletedAt);
       if (!currencyActivo) {
-        throw new BadRequestException('No existe una moneda activa con el nombre indicado');
+        throw new BadRequestException('No existe una moneda activa con el código indicado');
       }
       (updateActualCostDto as any).moneda_id = currencyActivo.id;
       delete (updateActualCostDto as any).moneda;

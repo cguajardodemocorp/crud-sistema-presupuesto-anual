@@ -145,13 +145,13 @@ export class AnnualPlansService {
       delete (updateAnnualPlanDto as any).pais;
     }
 
-    // Validar y mapear Moneda si se envía
+    // Validar y mapear Moneda por codigo 
     if ((updateAnnualPlanDto as any).moneda) {
-      const currencName = (updateAnnualPlanDto as any).moneda;
-      const currencyEntities = await this.plansRepository.manager.getRepository('Currency').find({ where: { nombre: currencName }, withDeleted: true });
+      const currencyCode = (updateAnnualPlanDto as any).moneda;
+      const currencyEntities = await this.plansRepository.manager.getRepository('Currency').find({ where: { codigo: currencyCode }, withDeleted: true });
       const currencyActivo = currencyEntities.find(c => !c.deletedAt);
       if (!currencyActivo) {
-        throw new BadRequestException('No existe una moneda activa con el nombre indicado');
+        throw new BadRequestException('No existe una moneda activa con el código indicado');
       }
       (updateAnnualPlanDto as any).moneda_id = currencyActivo.id;
       delete (updateAnnualPlanDto as any).moneda;
@@ -160,7 +160,7 @@ export class AnnualPlansService {
     // Validar y mapear Razon Social si se envía
     if ((updateAnnualPlanDto as any).razon_social) {
       const companyName = (updateAnnualPlanDto as any).razon_social;
-      const companyNameEntities = await this.plansRepository.manager.getRepository('Company').find({ where: { nombre: companyName }, withDeleted: true });
+      const companyNameEntities = await this.plansRepository.manager.getRepository('CompanyName').find({ where: { nombre: companyName }, withDeleted: true });
       const companyNameActivo = companyNameEntities.find(c => !c.deletedAt);
       if (!companyNameActivo) {
         throw new BadRequestException('No existe Razon social activa con el nombre indicado');
