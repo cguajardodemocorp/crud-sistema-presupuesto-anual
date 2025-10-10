@@ -107,12 +107,6 @@ export class AnnualPlan {
   @Column()
   tipo_carga: string;
 
-  @Column()
-  mes: number;
-
-  @Column()
-  cantidad: number;
-
   @OneToMany(() => DetailPlan, (detailPlan) => detailPlan.annualPlan)
   anual_plans: DetailPlan[];
 

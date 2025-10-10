@@ -56,12 +56,4 @@ export class CreateAnnualPlanDto {
     @IsIn(['NORMAL', 'CONFIDENCIAL'])
     tipo_carga?: 'NORMAL' | 'CONFIDENCIAL';
 
-    @IsInt()
-    @IsNotEmpty()
-    mes: number;
-
-    @IsInt()
-    @IsNotEmpty()
-    cantidad: number;
-
 }
